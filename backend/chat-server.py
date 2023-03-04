@@ -1,33 +1,83 @@
 #Message-server
 
-import socket,select
+import socket
+import select
 
-port = 12345
-socket_list = []
-users = {}
+PORT = 12345
+SOCKET_LIST = []
+USERS = {}
+
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-server_socket.bind(('',port))
+server_socket.bind(('localhost', PORT))
 server_socket.listen(5)
-socket_list.append(server_socket)
+
+SOCKET_LIST.append(server_socket)
+print("Chat server started on port " + str(PORT))
+
+def broadcast_data(sender_socket, message):
+    """Send a message to all connected clients except the sender."""
+    for socket in SOCKET_LIST:
+        if socket != server_socket and socket != sender_socket:
+            try:
+                socket.send(message)
+            except:
+                # Remove the socket if it is no longer reachable
+                socket.close()
+                SOCKET_LIST.remove(socket)
+                username = get_username(socket)
+                if username:
+                    print("Client " + username + " disconnected")
+
+def get_username(client_socket):
+    """Return the username associated with the client socket."""
+    for username, socket in USERS.items():
+        if socket == client_socket:
+            return username
+    return None
+
 while True:
-    ready_to_read,ready_to_write,in_error = select.select(socket_list,[],[],0)
-    for sock in ready_to_read:
+    # Use select to wait for incoming data or new connections
+    read_sockets, _, _ = select.select(SOCKET_LIST, [], [], 0)
+
+    for sock in read_sockets:
         if sock == server_socket:
-            connect, addr = server_socket.accept()
-            socket_list.append(connect)
-            connect.send("You are connected from:" + str(addr))
+            # Handle new connection requests
+            client_socket, address = server_socket.accept()
+            SOCKET_LIST.append(client_socket)
+            print("Client connected from " + address[0] + ":" + str(address[1]))
+            client_socket.send(("You are connected from: " + address[0]).encode())
         else:
+            # Handle incoming data from clients
             try:
                 data = sock.recv(2048)
-                if data.startswith("#"):
-                    users[data[1:].lower()]=connect
-                    print ("User " + data[1:] +" added.")
-                    connect.send("Your user detail saved as : "+str(data[1:]))
-                elif data.startswith("@"):
-                    users[data[1:data.index(':')].lower()].send(data[data.index(':')+1:])
+                if data:
+                    data = data.decode().strip()
+                    if data.startswith("#"):
+                        # Save the client's username
+                        username = data[1:].lower()
+                        USERS[username] = sock
+                        print("User " + username + " added.")
+                        sock.send(("Your user detail saved as: " + username).encode())
+                    elif data.startswith("@"):
+                        # Send a message to another client
+                        recipient, message = data[1:].split(':', 1)
+                        recipient_socket = USERS.get(recipient.lower())
+                        if recipient_socket:
+                            message = message.strip().encode()
+                            broadcast_data(sock, message)
+                            recipient_socket.send(("@" + get_username(sock) + ": " + message.decode()).encode())
+                        else:
+                            sock.send(("User " + recipient + " not found").encode())
+                    else:
+                        # Broadcast the message to all clients
+                        message = ("[" + get_username(sock) + "] " + data).encode()
+                        broadcast_data(sock, message)
             except:
-                continue
-
-server_socket.close()
+                # Remove the socket if it is no longer reachable
+                socket.close()
+                SOCKET_LIST.remove(socket)
+                username = get_username(socket)
+                if username:
+                    print("Client " + username + " disconnected")
 
