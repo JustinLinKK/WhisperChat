@@ -28,7 +28,7 @@ client_socket.send(send_msg)
 
 while True:
     recv_msg = client_socket.recv(1024)
-    print recv_msg
+    print (recv_msg)
     send_msg = raw_input("Send your message in format [@user:message] ")
     if send_msg == 'exit':
         break;

@@ -22,7 +22,7 @@ while True:
                 data = sock.recv(2048)
                 if data.startswith("#"):
                     users[data[1:].lower()]=connect
-                    print "User " + data[1:] +" added."
+                    print ("User " + data[1:] +" added.")
                     connect.send("Your user detail saved as : "+str(data[1:]))
                 elif data.startswith("@"):
                     users[data[1:data.index(':')].lower()].send(data[data.index(':')+1:])
