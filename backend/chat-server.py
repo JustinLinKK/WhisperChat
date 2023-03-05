@@ -1,25 +1,12 @@
-<<<<<<< HEAD
 # .venv\Scripts\activate.bat
 
 # Message-server
 
 import socket, select
-=======
-import socket
-import select
-
-PORT = 12345
-SOCKET_LIST = []
-USERS = {}
->>>>>>> b84e38deff03f01ca5a482644ae5ddc4ac3d01c1
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-<<<<<<< HEAD
 server_socket.bind(("", port))
-=======
-server_socket.bind(('localhost', PORT))
->>>>>>> b84e38deff03f01ca5a482644ae5ddc4ac3d01c1
 server_socket.listen(5)
 
 SOCKET_LIST.append(server_socket)
@@ -47,15 +34,8 @@ def get_username(client_socket):
     return None
 
 while True:
-<<<<<<< HEAD
     ready_to_read, ready_to_write, in_error = select.select(socket_list, [], [], 0)
     for sock in ready_to_read:
-=======
-    # Use select to wait for incoming data or new connections
-    read_sockets, _, _ = select.select(SOCKET_LIST, [], [], 0)
-
-    for sock in read_sockets:
->>>>>>> b84e38deff03f01ca5a482644ae5ddc4ac3d01c1
         if sock == server_socket:
             # Handle new connection requests
             client_socket, address = server_socket.accept()
@@ -71,20 +51,6 @@ while True:
             # Handle incoming data from clients
             try:
                 data = sock.recv(2048)
-<<<<<<< HEAD
-                if data.startswith("#"):
-                    users[data[1:].lower()] = connect
-                    print("User " + data[1:] + " added.")
-                    connect.send("Your user detail saved as : " + str(data[1:]))
-                elif data.startswith("@"):
-                    users[data[1 : data.index(":")].lower()].send(
-                        data[data.index(":") + 1 :]
-                    )
-            except:
-                continue
-
-server_socket.close()
-=======
                 if data:
                     data = data.decode('utf-8').strip()
                     if data.startswith("#"):
@@ -119,4 +85,3 @@ server_socket.close()
                     print("Client " + username + " disconnected")
                     message_send = "#" + "Client " + username + " disconnected"
                     broadcast_data(None, message_send.encode('utf-8'))
->>>>>>> b84e38deff03f01ca5a482644ae5ddc4ac3d01c1
