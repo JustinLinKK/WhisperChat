@@ -24,6 +24,7 @@ def test_connect():
     print("CONNECTION RECEIVED")
 
 
+# sendMessage handles a message that has to be sent from the frontend to another user
 @socketio.on("messageTopic")
 def sendMessage(message):
     responseMessage = {
@@ -35,6 +36,7 @@ def sendMessage(message):
     emit("messageTopic", json.dumps(responseMessage))
 
 
+# forwardMessage allows a message to be sent from this client's backend
 def forwardMessage(sender, receiver, message):
     output = {"sender": sender, "receiver": receiver, "message": message}
     emit("messageTopic", output)
