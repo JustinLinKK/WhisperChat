@@ -1,0 +1,11 @@
+* {
+  font-family: Helvetica;
+}
+hr {
+  border: 3px solid;
+}
+
+.theme-blue {
+  color: white;
+  background-color: #1982fc;
+}
