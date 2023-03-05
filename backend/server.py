@@ -5,6 +5,8 @@ from flask_socketio import SocketIO, emit
 import time
 import json
 import chatClientSender
+import os
+import encryption
 
 app = Flask(
     __name__,
@@ -13,7 +15,7 @@ app = Flask(
 )
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 socketio = SocketIO(app)
-
+publicKey = ""
 
 @app.route("/")
 def index():
@@ -29,7 +31,13 @@ def test_connect():
 @socketio.on("messageTopic")
 def sendMessage(message):
     decodedMessage = json.loads(message)
-    # chatClientSender.send_message(message, decodedMessage["receiver"])
+    receiver = decodedMessage["receiver"]
+    if (not receiver in os.environ):
+        # EXCHANGE PUBLIC KEYS HERE
+        # receiverPublicKey = exchangePublicKeys(receiver, publicKey)
+        # os.environ[receiver] = encryption.public_key_to_string(receiverPublicKey)
+        pass
+    # chatClientSender.send_message(message, receiver)
     responseMessage = {
         "sender": "[messageSender here]",
         "receiver": "localhost:3000",
@@ -46,4 +54,6 @@ def forwardMessage(sender, receiver, message):
 
 
 if __name__ == "__main__":
+    private_key,public_key = encryption.generate_key_pairs()
+    publicKey = encryption.public_key_to_string(public_key)
     socketio.run(app, port=3000)

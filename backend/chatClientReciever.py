@@ -17,11 +17,16 @@ while True:
     # Direct message from another user
     if not message:
             break
-    private_key = encryption.read_private_key()
-    decrypt_message = encryption.decrypt(message,private_key)
-    recv_message = decrypt_message.decode('utf-8')
-    sender = c.getsockname()
-    server.forwardMessage(sender,'localhost' , recv_message)
+    if message.startswith("@"):
+        public_key_string = message[1:]
+        public_key = encryption.public_string_to_key(public_key_string)
+        
+    else:
+        private_key = encryption.read_private_key()
+        decrypt_message = encryption.decrypt(message,private_key)
+        recv_message = decrypt_message.decode('utf-8')
+        sender = c.getsockname()
+        server.forwardMessage(sender,'localhost' , recv_message)
         
         
 
