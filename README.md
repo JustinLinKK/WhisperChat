@@ -46,10 +46,6 @@ Do the groupchat function and replace IP address as username
 ## Actual demo
 
 ```
-Sender side:
-https://user-images.githubusercontent.com/90200769/222956006-6adc6d0b-a6e8-4461-ad8d-ea467969eb9a.png
-
-
-Receiver side:
+See the open Issue demo
 
 
