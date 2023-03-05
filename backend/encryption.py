@@ -20,6 +20,7 @@ from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
 import json
+import os
 
 
 # Private Key Generation function
@@ -40,8 +41,12 @@ def store_private_key_file(private_key):
         format=serialization.PrivateFormat.PKCS8,
         encryption_algorithm=None,
     )
-    with open("private_key.pem", "wb") as f:
-        f.write(pem)
+    filename = "private_key.pem"
+    if not os.path.exists(filename):
+        with open(filename, "xb") as f:
+            f.write(pem)
+    else:
+        print(f"File {filename} already exists.")
 
 
 # Public Key Store function
