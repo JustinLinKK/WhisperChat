@@ -105,8 +105,8 @@ def read_public_key(username):
         )
         return public_key
     else:
-        # If the username doesn't exist, return 3
-        return 3
+        # If the username doesn't exist, return 2
+        return 2
 
 
 # Encryption function
