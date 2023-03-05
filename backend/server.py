@@ -27,15 +27,17 @@ def test_connect():
 @socketio.on("messageTopic")
 def sendMessage(message):
     responseMessage = {
-        "time": round(time.time()),
+        "sender": "[messageSender here]",
+        "receiver": "localhost:3000",
         "message": f"I got your message at around {time.time()}",
     }
     print(f"Message received was: {message}")
     emit("messageTopic", json.dumps(responseMessage))
 
 
-def forwardMessage(message):
-    emit("messageTopic", message)
+def forwardMessage(sender, receiver, message):
+    output = {"sender": sender, "receiver": receiver, "message": message}
+    emit("messageTopic", output)
 
 
 if __name__ == "__main__":
