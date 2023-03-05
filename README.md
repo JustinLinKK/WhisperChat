@@ -27,11 +27,11 @@ python chatClientSender.py
 type the destination IP address
 type the massage
 
-For reciever part:
+For Receiver part:
 Generate the key pairs using python keygeneration.py
 enter the public_keys.txt and change the "localhost" to machine IP address
 send the public_keys.txt to sender
-python chatClientReciever.py to wait for respond
+python chatClientReceiver.py to wait for respond
 
 ```
 ## Future Imporvement
@@ -43,5 +43,12 @@ Add exchanger to the network to aollow mor users
 Do the groupchat function and replace IP address as username
 
 ```
+## Actual demo
+
+```
+Sender side:
+![image](https://user-images.githubusercontent.com/90200769/222955843-f97e6613-2d7d-48cc-b947-18b73e4f0886.png)
+
+Receiver side:
 
 
