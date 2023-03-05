@@ -47,7 +47,8 @@ Do the groupchat function and replace IP address as username
 
 ```
 Sender side:
-![image](https://user-images.githubusercontent.com/90200769/222955843-f97e6613-2d7d-48cc-b947-18b73e4f0886.png)
+https://user-images.githubusercontent.com/90200769/222956006-6adc6d0b-a6e8-4461-ad8d-ea467969eb9a.png
+
 
 Receiver side:
 
