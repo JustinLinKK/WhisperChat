@@ -1,5 +1,3 @@
-#Message-server
-
 import socket
 import select
 
@@ -47,6 +45,11 @@ while True:
             SOCKET_LIST.append(client_socket)
             print("Client connected from " + address[0] + ":" + str(address[1]))
             client_socket.send(("#You are connected from: " + address[0]).encode('utf-8'))
+
+            # Send the list of currently connected users to the new client
+            if USERS:
+                users_msg = "Currently connected users: " + ", ".join(list(USERS.keys()))
+                client_socket.send(users_msg.encode('utf-8'))
         else:
             # Handle incoming data from clients
             try:
@@ -74,7 +77,7 @@ while True:
                             sock.send(message_send.encode('utf-8'))
                     else:
                         # Broadcast the message to all clients
-                        message_send = "@" + get_username(sock) + data
+                        message_send = + get_username(sock) + data
                         broadcast_data(sock, message_send.encode('utf-8'))
             except:
                 # Remove the socket if it is no longer reachable
@@ -85,4 +88,3 @@ while True:
                     print("Client " + username + " disconnected")
                     message_send = "#" + "Client " + username + " disconnected"
                     broadcast_data(None, message_send.encode('utf-8'))
-
