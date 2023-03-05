@@ -153,3 +153,21 @@ def decrypt(encrypted_message, private_key):
     )
 
     return original_message
+
+
+def public_key_to_string(public_keys):
+    public_key_str = public_keys
+    public_key_bytes = public_key_str.encode('utf-8')
+    public_key = serialization.load_pem_public_key(
+        data=public_key_bytes,
+        backend=default_backend()
+    )
+    return public_key
+
+def public_string_to_key(public_key):
+    public_key_bytes = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+    public_key_str = public_key_bytes.decode('utf-8')
+    return public_key_str
