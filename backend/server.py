@@ -28,6 +28,8 @@ def test_connect():
 # sendMessage handles a message that has to be sent from the frontend to another user
 @socketio.on("messageTopic")
 def sendMessage(message):
+    decodedMessage = json.loads(message)
+    chatClientSender.send_message(message, decodedMessage["receiver"])
     responseMessage = {
         "sender": "[messageSender here]",
         "receiver": "localhost:3000",
@@ -45,10 +47,3 @@ def forwardMessage(sender, receiver, message):
 
 if __name__ == "__main__":
     socketio.run(app, port=3000)
-
-
-
-
-
-
-#chatClientSender.send_message(message, recipient)
