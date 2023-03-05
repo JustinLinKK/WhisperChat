@@ -10,6 +10,7 @@
 # my_bytes = my_string.encode(encoding='utf-8')
 # encrypt(my_bytes)
 # We would use 'utf-8' as the encoder and decoder
+#Key length would be 2048 bits 
 
 # library import
 import cryptography
@@ -18,6 +19,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import padding
+import json
 
 
 # Private Key Generation function
@@ -32,34 +34,41 @@ def generate_key_pairs():
 
 # Private Key Store function
 # Store the private key as private_key.pem
-def store_private_key_file(private_key, password: bytes):
+def store_private_key_file(private_key):
     pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.BestAvailableEncryption(password),
+        encryption_algorithm=None,
     )
     with open("private_key.pem", "wb") as f:
         f.write(pem)
 
 
 # Public Key Store function
-# Store the public key as public_key.pem
-def store_public_key_file(public_key):
-    pem = public_key.private_bytes(
-        encoding=serialization.Encoding.PEM,
-        format=serialization.PublicFormat.SubjectPublicKeyInfo,
-    )
-    with open("public_key.pem", "wb") as f:
-        f.write(pem)
+# Store the public key as public_key.txt
+def store_public_key_file(public_key, username):
+    try:
+        with open('public_keys.txt', 'r') as f:
+            public_keys = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # If the file doesn't exist or can't be read as JSON, create an empty dictionary
+        public_keys = {}
+
+    # Add the new public key and username to the dictionary
+    public_keys[username] = public_key.decode()
+
+    # Write the updated dictionary to the file
+    with open('public_keys.txt', 'w') as f:
+        json.dump(public_keys, f)
 
 
 # Private Key reading function
 # Read the private key and return
 # Input is the file name string of the private key, should be a pem file
-def read_private_key(private_key_file, password_input: bytes):
-    with open(private_key_file, "rb") as key_file:
+def read_private_key():
+    with open("private_key.pem", "rb") as key_file:
         private_key = serialization.load_pem_private_key(
-            key_file.read(), password=password_input, backend=default_backend()
+            key_file.read(), password=None, backend=default_backend()
         )
 
     return private_key
@@ -67,14 +76,23 @@ def read_private_key(private_key_file, password_input: bytes):
 
 # Public Key reading function
 # Read the public key and return
-# Input is the file name string of the public key, should be a pem file
-def read_public_key(public_key_file):
-    with open(public_key_file, "rb") as key_file:
-        public_key = serialization.load_pem_public_key(
-            key_file.read(), backend=default_backend()
-        )
+# Input is the file name string of the public key, should be a txt file
+def read_public_key(username):
 
-    return public_key
+    try:
+        with open('public_keys.txt', 'r') as f:
+            public_keys = json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        # If the file doesn't exist or can't be read as JSON, return None
+        return None
+
+    if username in public_keys:
+        # If the username exists in the dictionary, return the corresponding value
+        public_key = public_keys[username]
+        return public_key.encode()
+    else:
+        # If the username doesn't exist, return None
+        return None
 
 
 # Encryption function
