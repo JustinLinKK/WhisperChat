@@ -3,7 +3,7 @@ import Chats from "./components/Chats";
 
 function App() {
   return (
-    <div>
+    <div className="overflow-visible">
       <div className="mb-5">
         <div className="row">
           <div className="col-3">

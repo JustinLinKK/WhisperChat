@@ -4,18 +4,26 @@ import socket from "../../Sockets";
 import ChatBanner from "./ChatBanner";
 
 export default function ChatInterface() {
+  const [messageHistory, setMessageHistory] = useState([]);
   const [receiver, setReceiver] = useState("");
   const [message, setMessage] = useState("");
   const sendMessage = () => {
-    const messageObject = {
-      sender: "",
-      receiver: receiver,
-      message: message,
-    };
-    socket.emit("messageTopic", JSON.stringify(messageObject));
-    console.log("Message sent: " + JSON.stringify(messageObject));
-    setMessage("");
+    if (message.trim() !== "") {
+      const messageObject = {
+        sender: "",
+        receiver: receiver,
+        message: message,
+      };
+      socket.emit("messageTopic", JSON.stringify(messageObject));
+      console.log("Message sent: " + JSON.stringify(messageObject));
+      setMessageHistory([...messageHistory, messageObject]);
+      setMessage("");
+    }
   };
+  socket.on("messageTopic", (newMessage) => {
+    setMessageHistory([...messageHistory, JSON.parse(newMessage)]);
+    console.log("Message Received!: " + newMessage);
+  });
 
   return (
     <>
@@ -35,13 +43,12 @@ export default function ChatInterface() {
             }}
           />
         </div>
-
         <hr />
-        <div className="ps-3">
-          <MessageHistory />
+        <div className="ps-3 px-3">
+          <MessageHistory messages={messageHistory} />
           <div className="d-flex">
             <textarea
-              className="form-control flex-grow mx-2"
+              className="form-control flex-grow me-2"
               id="message"
               value={message}
               onChange={(e) => {
@@ -49,7 +56,7 @@ export default function ChatInterface() {
               }}
             ></textarea>
             <button
-              className="btn btn-primary theme-blue mx-2"
+              className="btn btn-primary theme-blue ms-2"
               onClick={sendMessage}
             >
               Send

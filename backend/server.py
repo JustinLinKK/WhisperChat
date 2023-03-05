@@ -29,7 +29,7 @@ def test_connect():
 @socketio.on("messageTopic")
 def sendMessage(message):
     decodedMessage = json.loads(message)
-    chatClientSender.send_message(message, decodedMessage["receiver"])
+    # chatClientSender.send_message(message, decodedMessage["receiver"])
     responseMessage = {
         "sender": "[messageSender here]",
         "receiver": "localhost:3000",
