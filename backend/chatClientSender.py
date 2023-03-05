@@ -11,25 +11,23 @@
 
 import socket
 import encryption
-import chatClientReciever
+
 
 
 client_socket = socket.socket()
 port = 12345
-client_socket.connect(('127.0.0.1',port))
-
-
 
 
 #Input message_body, userneame.
 #Body message -> encode -> encryption -> sending
 def send_message(send_msg,recipient):
-    recipient = recipient.strip()
+    client_socket.connect((recipient,port))
     message = message.encode('utf-8')
     public_key = encryption.read_public_key(recipient)
     encrypt_message = encryption.encrypt(message,public_key)
-    send_msg = "@"+recipient+":"+encrypt_message
+    send_msg = encrypt_message
     client_socket.send(send_msg.encode('utf-8'))
+    client_socket.close()
 
 
 
