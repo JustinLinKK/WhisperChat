@@ -4,6 +4,7 @@ from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
 import time
 import json
+import chatClientSender
 
 app = Flask(
     __name__,
@@ -42,3 +43,10 @@ def forwardMessage(sender, receiver, message):
 
 if __name__ == "__main__":
     socketio.run(app, port=3000)
+
+
+
+
+
+
+#chatClientSender.send_message(message, recipient)
