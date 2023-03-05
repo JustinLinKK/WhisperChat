@@ -83,16 +83,16 @@ def read_public_key(username):
         with open('public_keys.txt', 'r') as f:
             public_keys = json.load(f)
     except (FileNotFoundError, json.JSONDecodeError):
-        # If the file doesn't exist or can't be read as JSON, return None
-        return None
+        # If the file doesn't exist or can't be read as JSON, return 1
+        return 1
 
     if username in public_keys:
         # If the username exists in the dictionary, return the corresponding value
         public_key = public_keys[username]
         return public_key.encode()
     else:
-        # If the username doesn't exist, return None
-        return None
+        # If the username doesn't exist, return 2
+        return 2
 
 
 # Encryption function
