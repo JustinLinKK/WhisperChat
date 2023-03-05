@@ -21,6 +21,7 @@ while True:
     decrypt_message = encryption.decrypt(message,private_key)
     recv_message = decrypt_message.decode('utf-8')
     sender = c.getsockname()
+    server.forwardMessage(sender,'localhost' , recv_message)
         
         
 
