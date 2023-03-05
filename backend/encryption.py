@@ -39,7 +39,7 @@ def store_private_key_file(private_key):
     pem = private_key.private_bytes(
         encoding=serialization.Encoding.PEM,
         format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=None,
+        encryption_algorithm=serialization.NoEncryption(),
     )
     filename = "private_key.pem"
     if not os.path.exists(filename):
@@ -60,8 +60,12 @@ def store_public_key_file(public_key, username):
         public_keys = {}
 
     # Add the new public key and username to the dictionary
-    public_keys[username] = public_key.decode()
-
+    public_key_bytes = public_key.public_bytes(
+        encoding=serialization.Encoding.PEM,
+        format=serialization.PublicFormat.SubjectPublicKeyInfo
+        )
+    public_key_str = public_key_bytes.decode('utf-8')
+    public_keys[username] = public_key_str
     # Write the updated dictionary to the file
     with open('public_keys.txt', 'w') as f:
         json.dump(public_keys, f)
@@ -93,8 +97,13 @@ def read_public_key(username):
 
     if username in public_keys:
         # If the username exists in the dictionary, return the corresponding value
-        public_key = public_keys[username]
-        return public_key.encode()
+        public_key_str = public_keys[username]
+        public_key_bytes = public_key_str.encode('utf-8')
+        public_key = serialization.load_pem_public_key(
+            data=public_key_bytes,
+            backend=default_backend()
+        )
+        return public_key
     else:
         # If the username doesn't exist, return 2
         return 2
