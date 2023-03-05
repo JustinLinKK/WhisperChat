@@ -88,12 +88,8 @@ def read_private_key():
 # Input is the file name string of the public key, should be a txt file
 def read_public_key(username):
 
-    try:
-        with open('public_keys.txt', 'r') as f:
-            public_keys = json.load(f)
-    except (FileNotFoundError, json.JSONDecodeError):
-        # If the file doesn't exist or can't be read as JSON, return 1
-        return 1
+    with open('public_keys.txt', 'r') as f:
+         public_keys = json.load(f)
 
     if username in public_keys:
         # If the username exists in the dictionary, return the corresponding value
@@ -104,9 +100,7 @@ def read_public_key(username):
             backend=default_backend()
         )
         return public_key
-    else:
-        # If the username doesn't exist, return 2
-        return 2
+
 
 
 # Encryption function

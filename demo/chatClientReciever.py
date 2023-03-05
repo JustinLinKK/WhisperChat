@@ -5,7 +5,7 @@ import encryption
 
 
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server_socket.bind(('localhost', 5555))
+server_socket.bind(('192.168.2.15', 5555))
 server_socket.listen(5)
 
 
@@ -20,7 +20,7 @@ while True:
             break
         # Direct message from another user
         if message.startswith("#"):
-            if encryption.read_public_key("localhost") == 3:
+            if encryption.read_public_key("localhost") == False:
                 private_key,public_key = encryption.generate_key_pairs
                 public_key_str= encryption.public_key_to_string(public_key)
                 encryption.store_private_key_file(private_key)
